@@ -1,28 +1,37 @@
 package projectJDBC.repository.genre;
 
+import com.mongodb.client.MongoCollection;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.mongodb.core.MongoTemplate;
+import org.springframework.data.mongodb.core.query.Criteria;
+import org.springframework.data.mongodb.core.query.Query;
 import projectJDBC.domain.Author;
 import projectJDBC.domain.Genre;
 
-import javax.persistence.EntityManager;
-import javax.persistence.PersistenceContext;
-import javax.persistence.TypedQuery;
+
 import java.util.List;
 
 public class GenreRepositoryImpl implements GenreRepositoryCustom {
 
-    @PersistenceContext
-    private EntityManager em;
+
+
+    @Autowired
+    private MongoTemplate mongoTemplate;
 
     @Override
     public Genre getByNameOrCreate(Genre genre) {
-        TypedQuery<Genre> query = em.createQuery("Select g from Genre g WHERE g.name_genre =:name", Genre.class);
-        query.setParameter("name", genre.getName_genre());
-        List<Genre> genres = query.getResultList();
+        Query queryMongo = new Query();
+        queryMongo.addCriteria(Criteria.where("name_genre").is(genre.getName_genre()));
+        Genre genreTemp = mongoTemplate.findOne(queryMongo, Genre.class);
 
-        if(!genres.isEmpty()){
-            return genres.get(0);
+
+        if (genreTemp != null){
+            return genreTemp;
         }else {
-            return em.merge(genre);
+            return mongoTemplate.save(genre);
         }
+
     }
+
+
 }

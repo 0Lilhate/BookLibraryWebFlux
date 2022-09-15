@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8"/>
+    <meta name="viewport"
+          content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.5.3/css/bootstrap.min.css">
+    <title>edit book</title>
+    <style>
+
+        input:read-only {
+            width: 100%;
+            background-color: black;
+            margin-bottom: 0.5%;
+        }
+
+    </style>
+</head>
+<body>
+
+    <form  class="mt-3 container" th:action="@{/book/edit}" th:object="${book}" method="post">
+        <h1 class="py-3">Edit Book</h1>
+        <div class="form-group">
+            <label for="id">Id</label>
+            <input id="id" readonly="readonly" required type="text" th:field="*{id_book}"
+                   class="form-control"/>
+        </div>
+
+        <div class="form-group">
+            <label for="name">Name book</label>
+            <input id="name" placeholder="Enter name book" required type="text" th:field="*{name}"
+                   class="form-control"/>
+        </div>
+        <div class="form-group">
+            <label for="date">Date book release</label>
+            <input id="date" placeholder="Enter id book" required type="text" th:field="*{date}"
+                   class="form-control"/>
+        </div>
+
+        <div class="form-group">
+            <label for="authorName">Author name</label>
+            <input id="authorName" placeholder="Enter name author" required type="text" th:field="*{authorName}"
+                   class="form-control"/>
+        </div>
+        <div class="form-group">
+            <label for="authorYear">Year of birth of the author</label>
+            <input id="authorYear" placeholder="Enter year author" required type="text" th:field="*{authorYear}"
+                   class="form-control"/>
+        </div>
+
+        <div class="form-group">
+            <label for="genres">Genres</label>
+            <input id="genres" placeholder="Enter genres" required type="text" th:field="*{genres}"
+                   class="form-control"/>
+        </div>
+        <div class="form-group">
+            <label for="commentsId">Comments id</label>
+            <input id="commentsId" readonly="readonly" required type="text" th:field="*{commentsId}"
+                   class="form-control"/>
+        </div>
+
+
+
+        <input  type="submit" class="btn btn-primary" value="Save">
+
+
+    </form>
+    <form class="mt-3 container" action="edit.html" th:action="@{/book/edit/delete(id=${book.id_book})}" th:method="POST">
+
+        <input type="submit" class="btn btn-primary" value="Delete">
+
+    </form>
+
+</body>
+</html>

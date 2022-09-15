@@ -3,23 +3,28 @@ package projectJDBC.domain;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.springframework.data.mongodb.core.index.Indexed;
+import org.springframework.data.mongodb.core.mapping.Document;
+import org.springframework.data.mongodb.core.mapping.Field;
 
 import javax.persistence.*;
-import java.util.Date;
 import java.util.Objects;
 
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-@Entity
+@Document("author")
 public class Author {
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private long id_author;
-    @Column(name = "author_name", nullable = false)
+    @Indexed(unique = true)
+    @Field("id")
+    private String id_author;
+
+    @Field("author_name")
+    @Indexed(unique = true)
     private String authorName;
 
-    @Column(name = "year_author", nullable = false)
+    @Field("year")
     private String year;
 
 

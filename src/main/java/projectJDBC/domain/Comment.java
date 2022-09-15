@@ -3,18 +3,21 @@ package projectJDBC.domain;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.springframework.data.mongodb.core.mapping.DBRef;
+import org.springframework.data.mongodb.core.mapping.Document;
+import org.springframework.data.mongodb.core.mapping.Field;
 
 import javax.persistence.*;
 
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-@Entity
+@Document("comment")
 public class Comment {
 
 
-    public Comment(long id_comment, String text) {
-        this.id_comment = id_comment;
+    public Comment(String id_comment, String text) {
+        this.id = id_comment;
         this.text = text;
     }
     public Comment(String text) {
@@ -22,14 +25,14 @@ public class Comment {
     }
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private long id_comment;
+    private String id;
 
-    @Column(name = "text")
+
+    @Field("text")
     private String text;
 
-    @ManyToOne
-    @JoinColumn(name = "id_book")
+    @Field("book")
+    @DBRef(lazy = true)
     private Book book;
 
 

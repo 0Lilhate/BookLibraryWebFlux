@@ -1,29 +1,37 @@
 package projectJDBC.repository.author;
 
-import projectJDBC.domain.Author;
-import projectJDBC.domain.Genre;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.mongodb.core.MongoTemplate;
+import org.springframework.data.mongodb.core.query.Criteria;
+import org.springframework.data.mongodb.core.query.Query;
 
-import javax.persistence.EntityManager;
-import javax.persistence.PersistenceContext;
-import javax.persistence.TypedQuery;
-import java.util.List;
+import projectJDBC.domain.Author;
+
+
 
 
 public class AuthorRepositoryImpl implements AuthorRepositoryCustom   {
 
-    @PersistenceContext
-    private EntityManager em;
+
+
+    @Autowired
+    private MongoTemplate mongoTemplate;
 
     @Override
     public Author getByNameOrCreate(Author author) {
-        TypedQuery<Author> query = em.createQuery("Select a from Author a WHERE a.authorName =:name", Author.class);
-        query.setParameter("name", author.getAuthorName());
-        List<Author> authors = query.getResultList();
+//        TypedQuery<Author> query = em.createQuery("Select a from Author a WHERE a.authorName =:name", Author.class);
+//        query.setParameter("name", author.getAuthorName());
+//        List<Author> authors = query.getResultList();
 
-        if (!authors.isEmpty()){
-            return authors.get(0);
+        Query queryMongo = new Query();
+        queryMongo.addCriteria(Criteria.where("author_name").is(author.getAuthorName()));
+        Author authorTemp = mongoTemplate.findOne(queryMongo, Author.class);
+
+
+        if (authorTemp != null){
+            return authorTemp;
         }else {
-            return em.merge(author);
+            return mongoTemplate.save(author);
         }
 
     }

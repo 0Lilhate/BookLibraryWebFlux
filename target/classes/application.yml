@@ -1,32 +1,23 @@
 spring:
-  datasource:
-    url: jdbc:h2:mem:testdb
-    username: daniil
-    password: 123
-    driver-class-name: org.h2.Driver
-    schema: schema.sql
-    data: data.sql
-    initialization-mode: always
+  data:
+    mongodb:
+      database: library
+      port: 27017
+      host: localhost
+      auto-index-creations: true
 
     shell:
       interactive:
         enabled: false
 
+mongock:
+# runner-type: "ApplicationRunner" # default
+
+  runner-type: "InitializingBean"
+
+#  change-logs-scan-package:
+#    - ru.otus.spring.mongock.changelog
 
 
-  jpa:
-    generate-ddl: false
-    hibernate:
-      ddl-auto: none
-
-    properties:
-      hibernate:
-        format_sql: true
-
-    show-sql: true
-
-logging:
-  level:
-    ROOT: ERROR
 
 

@@ -1,0 +1,6 @@
+POST http://localhost:8080/book/edit/delete
+
+<> 2022-09-14T213245.400.json
+
+###
+

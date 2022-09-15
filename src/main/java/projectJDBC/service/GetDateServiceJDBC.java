@@ -6,23 +6,16 @@ import org.springframework.stereotype.Service;
 
 import org.springframework.transaction.annotation.Transactional;
 import projectJDBC.controler.ControlMessenger;
-import projectJDBC.dao.author.AuthorDao;
-import projectJDBC.dao.book.BookDao;
-import projectJDBC.dao.genre.GenreDao;
 import projectJDBC.domain.Author;
 import projectJDBC.domain.Book;
 import projectJDBC.domain.Comment;
 import projectJDBC.domain.Genre;
 import projectJDBC.repository.author.AuthorRepository;
 import projectJDBC.repository.book.BookRepository;
-import projectJDBC.repository.book.BookRepositoryImpl;
+import projectJDBC.repository.comment.CommentRepository;
 import projectJDBC.repository.genre.GenreRepository;
 
-import javax.annotation.PostConstruct;
-import java.io.IOException;
-import java.sql.Date;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 
 @Service
@@ -32,21 +25,23 @@ public class GetDateServiceJDBC implements GetDateService {
     private ControlMessenger controlMessenger;
     private AuthorRepository authorRepository;
     private GenreRepository genreRepository;
+    private CommentRepository commentRepository;
 
 
     public GetDateServiceJDBC(BookRepository bookRepository, AuthorRepository authorRepository,
-                              GenreRepository genreRepository, ControlMessenger controlMessenger) {
+                              GenreRepository genreRepository, CommentRepository commentRepository, ControlMessenger controlMessenger) {
         this.bookRepository = bookRepository;
         this.controlMessenger = controlMessenger;
         this.authorRepository = authorRepository;
         this.genreRepository = genreRepository;
+        this.commentRepository = commentRepository;
     }
 
 
 
     @Override
     @Transactional
-    public void insertBook() {
+    public Book insertBook() {
 
         controlMessenger.greetingString("Введите название книги: ");
         String nameBook = controlMessenger.readLine();
@@ -70,13 +65,13 @@ public class GetDateServiceJDBC implements GetDateService {
         controlMessenger.greetingString("Введите комментарий к книге, если хотите: ");
         String comment =  controlMessenger.readLine();
 
-        List<Comment> commentSingleton = Collections.singletonList(new Comment(comment));
+        Comment commentSingleton = commentRepository.save(new Comment(comment));
 
 
 
         Book insertBook = new Book(nameBook, dateBook,
                 authorRepository.getByNameOrCreate(new Author(nameAuthor, yearAuthor)), genreList, commentSingleton);
-        bookRepository.save(insertBook);
+        return bookRepository.save(insertBook);
 
 
     }
@@ -85,20 +80,20 @@ public class GetDateServiceJDBC implements GetDateService {
     @Transactional
     @Override
     public void getAllBook() {
-        List<Book> bookList = bookRepository.getAllBookWithComment();
+        List<Book> bookList = bookRepository.findAll();
         for (Book temp : bookList) {
-            System.out.println(temp);
+           controlMessenger.greetingString(temp.toString()+"\n");
         }
     }
 
     @Override
     public void updateNameBookById() {
-        controlMessenger.greetingString("Введите id книги, которое хотите изменить: ");
+        controlMessenger.greetingString("Введите название книги, которое хотите изменить: ");
         String id = controlMessenger.readLine();
 
         controlMessenger.greetingString("Введите название книги, на которое хотите изменить: ");
         String nameBook = controlMessenger.readLine();
-        bookRepository.updateNameById(Long.parseLong(id), nameBook);
+        bookRepository.updateBookNameByName(id, nameBook);
 
 
     }
@@ -106,27 +101,54 @@ public class GetDateServiceJDBC implements GetDateService {
     @Transactional
     @Override
     public void deleteBookById() {
-        controlMessenger.greetingString("Введите id книги, которое хотите удалить: ");
-        String id = controlMessenger.readLine();
-        bookRepository.deleteById(Long.parseLong(id));
+        controlMessenger.greetingString("Введите название книги, которое хотите удалить: ");
+        String name = controlMessenger.readLine();
+        bookRepository.deleteBookByName(name);
     }
 
     @Transactional
     @Override
-    public Book getBookById() {
-        controlMessenger.greetingString("Введите id книги, которое хотите получить: ");
-        String id = controlMessenger.readLine();
-        Book book = bookRepository.getById(Long.parseLong(id));
-        if(book.getComments() == null){
-            controlMessenger.greetingString("{id=" + book.getId_book() + ", name = " + book.getName()
-                    + ", date = " + book.getDate() + ", author = " + book.getAuthor().getAuthorName() +
-                    "genre = " + book.getGenreList().toString() + "}\n");
-        }else {
-            controlMessenger.greetingString(book.toString()+"\n");
+    public boolean getBookById() {
+//        controlMessenger.greetingString("Введите id книги, которое хотите получить: ");
+//        String id = controlMessenger.readLine();
+//        Book book = bookRepository.findAll().get(Integer.valueOf(id));
+//        if(book.getComments() == null){
+//            controlMessenger.greetingString("{id=" + book.getId_book() + ", name = " + book.getName()
+//                    + ", date = " + book.getDate() + ", author = " + book.getAuthor().getAuthorName() +
+//                    "genre = " + book.getGenreList().toString() + "}\n");
+//        }else {
+//            controlMessenger.greetingString(book.toString()+"\n");
+//        }
+//        return book;
+
+        controlMessenger.greetingString("Введите название книги, которое хотите получить: ");
+        String nameBook = controlMessenger.readLine();
+        List<Book> bookList = bookRepository.findBookByName(nameBook);
+        if(!bookList.isEmpty()){
+            for (Book bookTemp : bookList) {
+                controlMessenger.greetingString(bookTemp.toString()+"\n");
+            }
+            return true;
         }
-        return book;
+        else {
+            return false;
+        }
+
+
 
     }
 
+    @Override
+    public void test() {
+        List<Genre> genreList = new ArrayList<>();
+        genreList.add(genreRepository.getByNameOrCreate(new Genre("Drama")));
+        genreList.add(genreRepository.getByNameOrCreate(new Genre("Romans")));
 
+        List<Comment> commentList = new ArrayList<>();
+        commentList.add(commentRepository.save(new Comment("yes")));
+        commentList.add(commentRepository.save(new Comment("not")));
+        bookRepository.insert(new Book( "xdad", "1999-05-11",
+                authorRepository.getByNameOrCreate(new Author("pppp", "2008-09-12")), genreList,
+                commentList));
+    }
 }

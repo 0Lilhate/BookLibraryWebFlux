@@ -1,20 +1,25 @@
 package projectJDBC;
 
-import org.h2.tools.Console;
+
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.boot.autoconfigure.jdbc.DataSourceAutoConfiguration;
+import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.ApplicationContext;
-import projectJDBC.domain.Book;
+import org.springframework.data.mongodb.repository.config.EnableMongoRepositories;
 import projectJDBC.service.GetDateService;
+import projectJDBC.service.WebService;
 
 import java.sql.SQLException;
 
-@SpringBootApplication
-public class Main {
-    public static void main(String[] args) throws SQLException {
-        ApplicationContext context = SpringApplication.run(Main.class);
-        GetDateService getDateService = context.getBean(GetDateService.class);
 
+@EnableMongoRepositories
+@SpringBootApplication(exclude= {DataSourceAutoConfiguration.class})
+public class Main {
+    public static void main(String[] args){
+        ApplicationContext context = SpringApplication.run(Main.class);
+        WebService webService = context.getBean(WebService.class);
+//        webService.deleteBookById("ada");
 
 
 

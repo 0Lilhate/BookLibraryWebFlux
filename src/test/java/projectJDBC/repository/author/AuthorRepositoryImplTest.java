@@ -2,34 +2,48 @@ package projectJDBC.repository.author;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
-import org.springframework.boot.test.autoconfigure.orm.jpa.TestEntityManager;
-import org.springframework.transaction.annotation.Propagation;
-import org.springframework.transaction.annotation.Transactional;
+import org.springframework.boot.test.autoconfigure.data.mongo.DataMongoTest;
+
+import org.springframework.data.mongodb.core.MongoTemplate;
+import org.springframework.data.mongodb.core.query.Criteria;
+import org.springframework.data.mongodb.core.query.Query;
+
 
 import projectJDBC.domain.Author;
 
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 
-@DataJpaTest
+@DataMongoTest
 class AuthorRepositoryImplTest {
 
     private static final String NAME_AUTHOR_DATA = "Pushkin";
     private static final String NAME_AUTHOR_CREATE = "Kekandos";
     private static final long FIRST_ID = 1;
-    @Autowired
-    private TestEntityManager em;
 
     @Autowired
     private AuthorRepository authorRepository;
 
-    @Test
-    void getByNameOrCreate() {
-        Author actualGet = em.find(Author.class, FIRST_ID);
-        assertThat(actualGet).isEqualTo(authorRepository.getByNameOrCreate(actualGet));
+    @Autowired
+    private MongoTemplate mongoTemplate;
 
-        Author actualInCreate = new Author(NAME_AUTHOR_CREATE, "2000-01-01");
-        assertThat(actualInCreate.getAuthorName()).isEqualTo(authorRepository.getByNameOrCreate(actualInCreate).getAuthorName());
+    @Test
+    void getByNameOrCreateNotUnique() {
+        Author expected = mongoTemplate.save(new Author(NAME_AUTHOR_CREATE, NAME_AUTHOR_DATA));
+        Author actual = authorRepository.getByNameOrCreate(new Author(NAME_AUTHOR_CREATE, NAME_AUTHOR_DATA));
+        assertThat(actual).isEqualTo(expected);
+
+    }
+
+    @Test
+    void getByNameOrCreateUnique() {
+
+        Author actual = authorRepository.getByNameOrCreate(new Author(NAME_AUTHOR_CREATE, NAME_AUTHOR_DATA));
+
+        Query query = new Query();
+        query.addCriteria(Criteria.where("author_name").is(NAME_AUTHOR_CREATE));
+        Author expected = mongoTemplate.findOne(query, Author.class);
+
+        assertThat(actual).isEqualTo(expected);
 
     }
 }

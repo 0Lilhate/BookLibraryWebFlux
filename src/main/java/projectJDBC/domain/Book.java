@@ -3,26 +3,27 @@ package projectJDBC.domain;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import org.hibernate.annotations.LazyCollection;
-import org.hibernate.annotations.LazyCollectionOption;
+
+import org.springframework.data.mongodb.core.mapping.DBRef;
+import org.springframework.data.mongodb.core.mapping.Document;
+import org.springframework.data.mongodb.core.mapping.Field;
 
 import javax.persistence.*;
 import java.util.Collections;
-import java.util.Date;
+
 import java.util.List;
 
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-@Entity
+@Document("book")
 public class Book {
 
-    public Book(long id_book, String name, String date, Author author, Genre genre, Comment comment){
-        this.id_book = id_book;
+    public Book(String name, String date, Author author, List<Genre> genreList, Comment comment){
         this.name = name;
         this.date = date;
         this.author = author;
-        this.genreList = Collections.singletonList(genre);
+        this.genreList = genreList;
         this.comments = Collections.singletonList(comment);
     }
 
@@ -34,37 +35,48 @@ public class Book {
         this.genreList = genres;
         this.comments = comments;
     }
+    public Book(String name, String date, Author author, Genre genre, Comment comment){
+        this.name = name;
+        this.date = date;
+        this.author = author;
+        this.genreList = Collections.singletonList(genre);
+        this.comments = Collections.singletonList(comment);
+    }
 
+    public Book(String idBook, String name, String year, Genre genre, Author author, Comment comments) {
+        this.id = idBook;
+        this.name = name;
+        this.date = year;
+        this.genreList = Collections.singletonList(genre);
+        this.author = author;
+        this.comments = Collections.singletonList(comments);
+    }
 
 
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private long id_book;
-
-    @Column(name = "name_book")
+    private String id;
+    @Field("name_book")
     private String name;
 
-    @Column(name = "date_book", nullable = false)
+    @Field("date")
     private String date;
 
-
-    @ManyToOne(targetEntity = Author.class, cascade = CascadeType.ALL, fetch = FetchType.LAZY)
-    @JoinColumn(name = "id_author")
+    @Field("author_name")
     private Author author;
 
-    @ManyToMany(targetEntity = Genre.class, cascade = {CascadeType.MERGE, CascadeType.PERSIST, CascadeType.DETACH}, fetch = FetchType.LAZY)
-    @JoinTable(name = "book_genre", joinColumns = @JoinColumn(name = "id_genre"),
-            inverseJoinColumns = @JoinColumn(name = "id_book"))
+    @Field("genre")
     private List<Genre> genreList;
 
-
-    @OneToMany(mappedBy = "book", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @DBRef(lazy = true)
+    @Field("comments")
     private List<Comment> comments;
+
+
 
     @Override
     public String toString() {
-        return "{id=" + id_book + ", name = " + name + ", date = " + date + ", author = " + author.getAuthorName() +
+        return "{id=" + id + ", name = " + name + ", date = " + date + ", author = " + author.getAuthorName() +
                "genre = " + genreList.toString() + "comments = " + comments.toString() + "}";
     }
 

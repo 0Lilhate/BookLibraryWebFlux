@@ -3,9 +3,11 @@ package projectJDBC.service;
 import projectJDBC.domain.Book;
 
 public interface GetDateService {
-    void insertBook();
+    Book insertBook();
     void getAllBook();
     void updateNameBookById();
     void deleteBookById();
-    Book getBookById();
+    boolean getBookById();
+
+    void test();
 }

@@ -1,0 +1,6 @@
+{
+  "timestamp": "2022-09-14T18:32:45.811+00:00",
+  "status": 400,
+  "error": "Bad Request",
+  "path": "/book/edit/delete"
+}
