@@ -2,13 +2,11 @@ package projectJDBC.rest;
 
 import lombok.val;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import projectJDBC.dto.BookDto;
 import projectJDBC.service.ParsingDtoBook;
-import projectJDBC.service.ParsingDtoImpl;
 import projectJDBC.service.WebService;
 
 import java.util.ArrayList;
@@ -30,7 +28,7 @@ public class BookController {
     public String listPage(Model model) {
         List<BookDto> bookDtoList = new ArrayList<>();
         for (val tempBook : webService.getAllBook()) {
-            bookDtoList.add(parsingDtoBook.Book_to_DtoBook(tempBook));
+            bookDtoList.add(parsingDtoBook.bookToDtoBook(tempBook));
         }
 
         model.addAttribute("books", bookDtoList);
@@ -39,7 +37,7 @@ public class BookController {
 
     @GetMapping("/book/edit")
     public String editBook(@RequestParam("id") String id, Model model){
-        BookDto bookDto = parsingDtoBook.Book_to_DtoBook(webService.getBookById(id));
+        BookDto bookDto = parsingDtoBook.bookToDtoBook(webService.getBookById(id));
         model.addAttribute("book", bookDto);
         return "edit";
     }
@@ -59,7 +57,7 @@ public class BookController {
 
     @RequestMapping(value = "/book/create", method = RequestMethod.POST)
     public String createBook(@ModelAttribute BookDto bookDto) {
-        webService.insertBook(parsingDtoBook.BookDto_to_Book(bookDto));
+        webService.insertBook(parsingDtoBook.bookDtoToBook(bookDto));
         return "redirect:/book";
     }
 

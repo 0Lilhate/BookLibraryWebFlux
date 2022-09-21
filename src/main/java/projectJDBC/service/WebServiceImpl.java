@@ -30,8 +30,8 @@ public class WebServiceImpl implements WebService{
     }
 
     @Override
-    public Boolean updateNameBookById(String id, String name) {
-        return bookRepository.updateBookNameByName(id,name);
+    public void updateNameBookById(String id, String name) {
+       bookRepository.updateBookNameByName(id,name);
     }
 
     @Override

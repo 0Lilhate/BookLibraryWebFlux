@@ -9,13 +9,14 @@ import projectJDBC.domain.Genre;
 import projectJDBC.dto.BookDto;
 
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
 @Service
-public class ParsingDtoImpl implements ParsingDtoBook {
+public class ParsingDtoImpl implements ParsingDtoBook{
     @Override
-    public BookDto Book_to_DtoBook(Book book) {
+    public BookDto bookToDtoBook(Book book) {
         BookDto bookDto = new BookDto();
         bookDto.setId_book(book.getId());
         bookDto.setName(book.getName());
@@ -41,7 +42,7 @@ public class ParsingDtoImpl implements ParsingDtoBook {
     }
 
     @Override
-    public Book BookDto_to_Book(BookDto bookDto) {
+    public Book bookDtoToBook(BookDto bookDto) {
         Book book = new Book();
 
         book.setId(bookDto.getId_book());
