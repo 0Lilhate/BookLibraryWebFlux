@@ -5,18 +5,8 @@ spring:
       port: 27017
       host: localhost
       auto-index-creations: true
-
-    shell:
-      interactive:
-        enabled: false
-
-mongock:
-# runner-type: "ApplicationRunner" # default
-
-  runner-type: "InitializingBean"
-
-#  change-logs-scan-package:
-#    - ru.otus.spring.mongock.changelog
+      embedded:
+        version: 3.3.4
 
 
 

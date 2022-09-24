@@ -19,7 +19,7 @@ public class BookDto implements Serializable {
     private String authorName;
     private String authorYear;
     private List<String> genres;
-    private List<String> commentsId;
+
 
 
 }

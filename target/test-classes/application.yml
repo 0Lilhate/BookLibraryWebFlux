@@ -41,19 +41,3 @@ spring:
       port: 0
       database: test
 
-  datasource:
-    initialization-mode: never
-    shell:
-      interactive:
-        enabled: false
-
-mongock:
-#   runner-type: "ApplicationRunner" # default
-  runner-type: "InitializingBean"
-  change-logs-scan-package:
-    - projectJDBC.changelogs
-  mongo-db:
-    write-concern:
-      journal: false
-    read-concern: local
-

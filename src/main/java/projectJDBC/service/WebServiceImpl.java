@@ -3,8 +3,8 @@ package projectJDBC.service;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import projectJDBC.domain.Book;
+import projectJDBC.dto.BookDto;
 import projectJDBC.repository.book.BookRepository;
-import projectJDBC.rest.NotFoundException;
 
 import java.util.List;
 
@@ -12,26 +12,29 @@ import java.util.List;
 public class WebServiceImpl implements WebService{
 
     private final BookRepository bookRepository;
+    private final ParsingDtoBook parsingDtoBook;
 
     @Autowired
-    public WebServiceImpl(BookRepository bookRepository) {
+    public WebServiceImpl(BookRepository bookRepository, ParsingDtoBook parsingDtoBook) {
         this.bookRepository = bookRepository;
+        this.parsingDtoBook = parsingDtoBook;
     }
 
     @Override
-    public Book insertBook(Book book) {
+    public BookDto insertBook(Book book) {
 
-        return bookRepository.save(book);
+        return parsingDtoBook.bookToDtoBook(book);
     }
 
     @Override
-    public List<Book> getAllBook() {
-        return bookRepository.findAll();
+    public List<BookDto> getAllBook() {
+//        return bookRepository.findAll();
+        return null;
     }
 
     @Override
     public void updateNameBookById(String id, String name) {
-       bookRepository.updateBookNameByName(id,name);
+//       bookRepository.updateBookNameById(id,name);
     }
 
     @Override
@@ -41,7 +44,8 @@ public class WebServiceImpl implements WebService{
     }
 
     @Override
-    public Book getBookById(String id) {
-        return bookRepository.findById(id).orElseThrow(NotFoundException::new);
+    public BookDto getBookById(String id) {
+//        return bookRepository.findById(id).orElseThrow(NotFoundException::new);
+        return null;
     }
 }

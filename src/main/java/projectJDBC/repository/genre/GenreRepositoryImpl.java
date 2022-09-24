@@ -1,12 +1,14 @@
 package projectJDBC.repository.genre;
 
-import com.mongodb.client.MongoCollection;
+
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.mongodb.core.MongoTemplate;
+
+import org.springframework.data.mongodb.core.ReactiveMongoTemplate;
+
 import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.data.mongodb.core.query.Query;
-import projectJDBC.domain.Author;
 import projectJDBC.domain.Genre;
+import reactor.core.publisher.Mono;
 
 
 import java.util.List;
@@ -16,22 +18,20 @@ public class GenreRepositoryImpl implements GenreRepositoryCustom {
 
 
     @Autowired
-    private MongoTemplate mongoTemplate;
+    private ReactiveMongoTemplate mongoTemplate;
 
     @Override
-    public Genre getByNameOrCreate(Genre genre) {
-        Query queryMongo = new Query();
-        queryMongo.addCriteria(Criteria.where("name_genre").is(genre.getName_genre()));
-        Genre genreTemp = mongoTemplate.findOne(queryMongo, Genre.class);
+    public Mono<Genre> getByNameOrCreate(Genre genre) {
 
+        Query query = new Query();
+        query.addCriteria(Criteria.where("genreList").is(genre.getName_genre()));
 
-        if (genreTemp != null){
-            return genreTemp;
-        }else {
-            return mongoTemplate.save(genre);
-        }
+        Mono<Genre> genreMono = mongoTemplate.findOne(query, Genre.class);
 
+        return genreMono.switchIfEmpty(mongoTemplate.save(genre));
     }
+
+
 
 
 }

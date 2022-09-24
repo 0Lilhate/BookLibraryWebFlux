@@ -32,11 +32,11 @@ public class ParsingDtoImpl implements ParsingDtoBook{
         bookDto.setGenres(genresName);
 
 
-        List<String> commentsId = new ArrayList<>();
-        for (val comment: book.getComments()){
-            commentsId.add(comment.getId());
-        }
-        bookDto.setCommentsId(commentsId);
+//        List<String> commentsId = new ArrayList<>();
+//        for (val comment: book.getComments()){
+//            commentsId.add(comment.getId());
+//        }
+//        bookDto.setCommentsId(commentsId);
 
         return bookDto;
     }
@@ -56,10 +56,10 @@ public class ParsingDtoImpl implements ParsingDtoBook{
         book.setGenreList(genres);
 
         List<Comment> comments = new ArrayList<>();
-        for(int i = 0; i<bookDto.getCommentsId().size(); i++){
-            comments.add(new Comment(bookDto.getCommentsId().get(i)));
-        }
-        book.setComments(comments);
+//        for(int i = 0; i<bookDto.getCommentsId().size(); i++){
+//            comments.add(new Comment(bookDto.getCommentsId().get(i)));
+//        }
+//        book.setComments(comments);
 
         return book;
     }

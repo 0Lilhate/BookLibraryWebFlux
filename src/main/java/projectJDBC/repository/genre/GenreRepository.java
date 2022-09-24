@@ -1,8 +1,9 @@
 package projectJDBC.repository.genre;
 
 
-import org.springframework.data.mongodb.repository.MongoRepository;
+
+import org.springframework.data.mongodb.repository.ReactiveMongoRepository;
 import projectJDBC.domain.Genre;
 
-public interface GenreRepository extends MongoRepository<Genre, String>, GenreRepositoryCustom {
+public interface GenreRepository extends ReactiveMongoRepository<Genre, String>, GenreRepositoryCustom {
 }

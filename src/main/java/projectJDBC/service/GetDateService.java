@@ -1,6 +1,9 @@
 package projectJDBC.service;
 
+import projectJDBC.domain.Author;
 import projectJDBC.domain.Book;
+
+import java.util.concurrent.ExecutionException;
 
 public interface GetDateService {
     Book insertBook();
@@ -9,5 +12,5 @@ public interface GetDateService {
     void deleteBookById();
     boolean getBookById();
 
-    void test();
+    Author test() throws ExecutionException, InterruptedException;
 }
